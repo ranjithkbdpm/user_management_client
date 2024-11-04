@@ -1,22 +1,32 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { FaExclamationCircle } from "react-icons/fa";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from '../utilities/apiRequest';
 
 
 const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const navigate = useNavigate();
 
   const onSubmit = async(data) => {    
     if(data){
       try {
-        const response = await axios.post('/user/login', data);
+        const response = await axios.post('/auth/login', data);
         if(!response){
-          alert('form submitted successfully', response.data)
+          alert('No response from server');
         }
+
+        if(response?.data?.success){
+          alert(response?.data?.message)
+          navigate('/dashboard')
+        }else{
+          alert(response?.data?.message)
+        }
+        // console.log(response.data)
       } catch(err) {
           console.log('login for error', err);
+          alert(err);
       }
     }
   } 

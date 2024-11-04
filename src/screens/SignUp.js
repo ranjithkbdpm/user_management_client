@@ -12,10 +12,10 @@ const SignUp = () => {
         if(data){
             if(data.password === data.confirmpassword){
                 try {
-                    const response = await axios.post('/user/signup', data);
+                    const response = await axios.post('/auth/signup', data);
                     if (response && response.status === 201) {
                         alert('Sign up successful', response.data);
-                        
+                        console.log(response.data)                        
                     }
                     console.log(data)
                 } catch(err) {
