@@ -2,7 +2,7 @@ import React from 'react'
 import { useForm } from 'react-hook-form';
 import { FaExclamationCircle } from "react-icons/fa";
 import { Link } from 'react-router-dom';
-import axios from '../utilities/apiRequest';
+import apiRequest from '../utilities/apiRequest.js';
 
 const SignUp = () => {
 
@@ -12,7 +12,7 @@ const SignUp = () => {
         if(data){
             if(data.password === data.confirmpassword){
                 try {
-                    const response = await axios.post('/auth/signup', data);
+                    const response = await apiRequest.post('/auth/signup', data);
                     if (response && response.status === 201) {
                         alert('Sign up successful', response.data);
                         console.log(response.data)                        

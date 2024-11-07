@@ -1,25 +1,38 @@
-import React from 'react';
+import {useContext} from 'react';
 import { useForm } from 'react-hook-form';
 import { FaExclamationCircle } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
-import axios from '../utilities/apiRequest';
+import apiRequest from '../utilities/apiRequest.js';
+import {AuthContext} from '../context/AuthProvider.js';
+
+
 
 
 const Login = () => {
+  const {setAuth} = useContext(AuthContext);
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
 
   const onSubmit = async(data) => {    
-    if(data){
+    if(data){ 
       try {
-        const response = await axios.post('/auth/login', data);
+        const response = await apiRequest.post('/auth/login', data,  
+          // {
+          // // withCredentials: true //to store cookies automatically
+          // // if you are using fetch the credentials:'include'
+          // }
+      );
         if(!response){
           alert('No response from server');
         }
 
         if(response?.data?.success){
-          alert(response?.data?.message)
-          navigate('/dashboard')
+          const accessToken = response?.data.accessToken;
+          const roles = response?.data?.roles;
+          const email = data.email;
+          setAuth({ email, roles, accessToken});
+          alert(response?.data?.message);           
+          navigate('/dashboard');
         }else{
           alert(response?.data?.message)
         }
@@ -44,8 +57,8 @@ const Login = () => {
         })} 
       />
       {errors.email && 
-        <p className="err-msg-form align-middle"> 
-          <FaExclamationCircle className="me-2 pb-1"/> Email is required        </p>
+        <p className="err-msg-form align-middle mt-2"> 
+          <FaExclamationCircle className="me-2 pb-1"/> Email is required</p>
       }
       
       <input 
@@ -58,7 +71,7 @@ const Login = () => {
         })} 
       />
       {errors.password && 
-        <p className="err-msg-form">
+        <p className="err-msg-form mt-2">
              <FaExclamationCircle className="me-2 pb-1"/>
             <span>
               Password must have at least one uppercase letter, one lowercase letter, one digit, one special character, and be at least 8 characters long.
